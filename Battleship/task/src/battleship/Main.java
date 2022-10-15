@@ -6,5 +6,6 @@ public class Main {
         Battleship battleship = new Battleship();
         battleship.init();
         battleship.arrangeShips();
+        battleship.startGame();
     }
 }

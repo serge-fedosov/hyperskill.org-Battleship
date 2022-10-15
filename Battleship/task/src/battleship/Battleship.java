@@ -111,4 +111,40 @@ public class Battleship {
             showField();
         }
     }
+
+    public void startGame() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("\nThe game starts!\n");
+        showField();
+        System.out.println("\nTake a shot!\n");
+
+        int x0, y0;
+        boolean error;
+        do {
+            error = false;
+
+            String shot = scanner.nextLine().trim().toUpperCase();
+            System.out.println();
+
+            y0 = shot.charAt(0) - 'A';
+            x0 = Integer.parseInt(shot.substring(1)) - 1;
+
+            if (y0 < 0 || y0 > 9 || x0 < 0 || x0 > 9) {
+                System.out.println("\nError! You entered the wrong coordinates! Try again:\n");
+                error = true;
+            }
+
+        } while (error);
+
+        if (field[y0][x0] == 'O') {
+            field[y0][x0] = 'X';
+            showField();
+            System.out.println("\nYou hit a ship!\n");
+        } else {
+            field[y0][x0] = 'M';
+            showField();
+            System.out.println("\nYou missed!");
+        }
+    }
 }
