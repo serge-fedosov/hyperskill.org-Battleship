@@ -5,6 +5,7 @@ import java.util.Scanner;
 public class Battleship {
 
     private final char[][] field = new char[10][10];
+    private final char[][] shot = new char[10][10];
     private final String[] ships = new String[] {"Aircraft Carrier", "Battleship", "Submarine", "Cruiser", "Destroyer"};
     private final int[] shipSize = new int[] {5, 4, 3, 3, 2};
 
@@ -12,6 +13,7 @@ public class Battleship {
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
                 field[i][j] = '~';
+                shot[i][j] = '~';
             }
         }
     }
@@ -28,6 +30,17 @@ public class Battleship {
         }
     }
 
+    private void showShot() {
+        System.out.println("  1 2 3 4 5 6 7 8 9 10");
+        char ch = 'A';
+        for (int i = 0; i < 10; i++) {
+            System.out.print(ch++);
+            for (int j = 0; j < 10; j++) {
+                System.out.print(" " + shot[i][j]);
+            }
+            System.out.println();
+        }
+    }
 
     private boolean isPositionCorrect(int y, int x) {
         char o = 'O';
@@ -116,7 +129,7 @@ public class Battleship {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("\nThe game starts!\n");
-        showField();
+        showShot();
         System.out.println("\nTake a shot!\n");
 
         int x0, y0;
@@ -139,12 +152,16 @@ public class Battleship {
 
         if (field[y0][x0] == 'O') {
             field[y0][x0] = 'X';
-            showField();
+            shot[y0][x0] = 'X';
+            showShot();
             System.out.println("\nYou hit a ship!\n");
         } else {
             field[y0][x0] = 'M';
-            showField();
-            System.out.println("\nYou missed!");
+            shot[y0][x0] = 'M';
+            showShot();
+            System.out.println("\nYou missed!\n");
         }
+
+        showField();
     }
 }
