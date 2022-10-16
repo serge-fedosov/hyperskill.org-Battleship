@@ -9,6 +9,10 @@ public class Battleship {
     private final String[] ships = new String[] {"Aircraft Carrier", "Battleship", "Submarine", "Cruiser", "Destroyer"};
     private final int[] shipSize = new int[] {5, 4, 3, 3, 2};
 
+    char SYM_SHIP = 'O';
+    char SYM_MISS = 'M';
+    char SYM_HIT = 'X';
+
     public void init() {
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
@@ -43,7 +47,7 @@ public class Battleship {
     }
 
     private boolean isPositionCorrect(int y, int x) {
-        char o = 'O';
+        char o = SYM_SHIP;
         return (y - 1 < 0 || x - 1 < 0 || field[y - 1][x - 1] != o) && (y - 1 < 0 || field[y - 1][x] != o)
                 && (y - 1 < 0 || x + 1 > 9 || field[y - 1][x + 1] != o) && (x - 1 < 0 || field[y][x - 1] != o)
                 && (x + 1 > 9 || field[y][x + 1] != o) && (y + 1 > 9 || x - 1 < 0 || field[y + 1][x - 1] != o)
@@ -125,6 +129,18 @@ public class Battleship {
         }
     }
 
+    private boolean isGameOver() {
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                if (field[i][j] == SYM_SHIP) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
     public void startGame() {
         Scanner scanner = new Scanner(System.in);
 
@@ -132,35 +148,50 @@ public class Battleship {
         showShot();
         System.out.println("\nTake a shot!\n");
 
-        int x0, y0;
-        boolean error;
+        boolean gameOver;
         do {
-            error = false;
+            gameOver = false;
 
-            String shot = scanner.nextLine().trim().toUpperCase();
-            System.out.println();
+            int x0, y0;
+            boolean error;
+            do {
+                error = false;
 
-            y0 = shot.charAt(0) - 'A';
-            x0 = Integer.parseInt(shot.substring(1)) - 1;
+                String shot = scanner.nextLine().trim().toUpperCase();
+                System.out.println();
 
-            if (y0 < 0 || y0 > 9 || x0 < 0 || x0 > 9) {
-                System.out.println("\nError! You entered the wrong coordinates! Try again:\n");
-                error = true;
+                y0 = shot.charAt(0) - 'A';
+                x0 = Integer.parseInt(shot.substring(1)) - 1;
+
+                if (y0 < 0 || y0 > 9 || x0 < 0 || x0 > 9) {
+                    System.out.println("\nError! You entered the wrong coordinates! Try again:\n");
+                    error = true;
+                }
+
+            } while (error);
+
+            if (field[y0][x0] == SYM_SHIP || field[y0][x0] == SYM_HIT) {
+                field[y0][x0] = SYM_HIT;
+                shot[y0][x0] = SYM_HIT;
+                showShot();
+                gameOver = isGameOver();
+                if (gameOver) {
+                    System.out.println("\nYou sank the last ship. You won. Congratulations!\n");
+                } else {
+                    System.out.println("\nYou hit a ship! Try again:\n");
+                }
+            } else {
+                field[y0][x0] = SYM_MISS;
+                shot[y0][x0] = SYM_MISS;
+                showShot();
+                gameOver = isGameOver();
+                if (gameOver) {
+                    System.out.println("\nYou sank the last ship. You won. Congratulations!\n");
+                } else {
+                    System.out.println("\nYou missed. Try again:\n");
+                }
             }
-
-        } while (error);
-
-        if (field[y0][x0] == 'O') {
-            field[y0][x0] = 'X';
-            shot[y0][x0] = 'X';
-            showShot();
-            System.out.println("\nYou hit a ship!\n");
-        } else {
-            field[y0][x0] = 'M';
-            shot[y0][x0] = 'M';
-            showShot();
-            System.out.println("\nYou missed!\n");
-        }
+        } while (!gameOver);
 
         showField();
     }
